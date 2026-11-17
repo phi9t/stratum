@@ -251,6 +251,13 @@ jobs:
           npm ci
           npm run index
       - run: cp -r schematics/dist dist/schematics
+      - name: Build and test the 1F1B explorer
+        working-directory: parallel-training
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - run: cp -r parallel-training/dist dist/parallel-training
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
