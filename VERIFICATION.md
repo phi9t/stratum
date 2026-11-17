@@ -808,7 +808,7 @@ Portable HTML SHA-256: `681120311d72174f0c1f1b49063c80cc740df132b0b805df08fe7285
 
 Scientific lock SHA-256: `1c98f0592895951493759023585d56f68491cb1a34ae5a0652b603b5f34ecc5e`
 
-Verifier identity SHA-256: `89ac1308c7793d7ce6d08b6db40d01a840b8c0f6e72140aac698a3ad811fbc26`
+Verifier identity SHA-256: `fd9815602a572abd777cf546456e3183f91212c32373a8628d9ab6692e0e0e59`
 
 Complete command logs and receipts: `verification/reports/`. Full browser matrix:
 `tests/browser-cases.json`. Re-run after changing application, verifier or evidence; old receipts
