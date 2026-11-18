@@ -192,7 +192,7 @@ function App() {
       </section>
       </Connectivity>
       <MlpDrilldown key={[count,chunks,selected,selectedChunk].join("/")} plan={plan} stage={selected}
-        chunk={details[selected][selectedChunk]} chunks={chunks}/>
+        chunk={details[selected][selectedChunk]} chunks={chunks} microbatch={trace||1}/>
       <p className="small muted scope">A full-stage task takes one time unit. Each interleaved chunk takes half a unit. Ready and used mark producer completion and consumer start. The schedule assumes balanced work and omits transfer time and recomputation.</p>
     </main>
   </>;

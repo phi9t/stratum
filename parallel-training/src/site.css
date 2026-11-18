@@ -56,3 +56,22 @@
 .mlp-node.fsdp button{background:#e4d4fa}
 .saved-key{color:var(--live)}
 @media(max-width:700px){.mlp-details{grid-template-columns:1fr}}
+.graph-explorer{display:grid;gap:12px}
+.graph-tabs,.module-controls{display:flex;flex-wrap:wrap;gap:6px}
+.graph-tabs button,.module-controls button{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:5px 9px;border-radius:4px;font:inherit;font-size:14px;cursor:pointer}
+.graph-tabs button[aria-pressed=true],.module-controls button[aria-pressed=true]{background:#23334b;color:#fff}
+.graph-inspector{min-width:0}
+.graph-inspector h3{font-size:16px;margin:0 0 6px}
+.graph-inspector p,.graph-evidence p{margin:6px 0;overflow-wrap:anywhere}
+.mesh-context{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;margin:12px 0}
+.mesh-context h3{margin:0 0 6px;font-size:16px}
+.semantic-scroll{max-width:100%}
+.semantic-flow{position:relative}
+.semantic-flow .mlp-node button{font-size:14px;line-height:1.4;padding:10px;align-content:center;overflow-wrap:anywhere}
+.semantic-flow .mlp-node strong{font-size:14px}
+.semantic-flow .mlp-node.module button{background:#e8f0fe}
+.graph-inspector summary{cursor:pointer;font-size:14px}
+.graph-inspector code{overflow-wrap:anywhere}
+@media(max-width:700px){.mesh-context{grid-template-columns:1fr}}
+.mlp-controls label{flex-wrap:wrap;max-width:100%}
+.mlp-controls select{min-width:0;max-width:100%}

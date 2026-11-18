@@ -28,6 +28,12 @@ jobs:
           uv sync --frozen
       - name: Install test browser
         run: uv run --frozen playwright install --with-deps chromium
+      - name: Verify the reusable graph explorer
+        run: |
+          npm ci --prefix parallel-training
+          npm test --prefix parallel-training
+          npm run build --prefix parallel-training
+          uv run --frozen python parallel-training/tests/browser.py
       - run: npm run verify:engineering
       # A locally produced receipt asserts every field it is judged on. Attesting the exact
       # tested artifact is what makes the receipt evidence rather than a claim about itself.
