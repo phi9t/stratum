@@ -12,6 +12,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
 
+def assert_page_fit(page):
+    measured = page.evaluate("""() => {
+        const root=document.documentElement;
+        return {viewport:root.clientWidth, content:root.scrollWidth, inner:innerWidth,
+            overflowing:[...document.querySelectorAll('label,select,section,.graph-inspector')]
+                .filter(e=>e.getBoundingClientRect().right>root.clientWidth+1)
+                .map(e=>({tag:e.tagName, class:e.className, right:e.getBoundingClientRect().right}))};
+    }""")
+    assert measured['content'] <= measured['viewport'], measured
+
 def main():
     with http.server.ThreadingHTTPServer(('127.0.0.1', 0), functools.partial(Handler, directory=str(ROOT/'dist'))) as server:
         threading.Thread(target=server.serve_forever, daemon=True).start()
@@ -77,12 +87,12 @@ def main():
             assert page.locator('#mlp').evaluate('e => e.scrollWidth <= e.clientWidth')
             page.locator('#mlp').evaluate("e => e.style.removeProperty('width')")
             page.set_viewport_size({'width':320,'height':850})
-            assert page.evaluate('document.documentElement.scrollWidth === innerWidth')
+            assert_page_fit(page)
             fixtures=page.get_by_label('Graph',exact=True).locator('option').evaluate_all('els => els.map(e => e.value)')
             for graph in fixtures:
                 page.get_by_label('Graph',exact=True).select_option(graph)
                 page.locator('.semantic-flow .react-flow__node').first.wait_for()
-                assert page.evaluate('document.documentElement.scrollWidth === innerWidth')
+                assert_page_fit(page)
                 clipped = page.locator('.semantic-flow .mlp-node button').evaluate_all(
                     'els => els.filter(e => e.scrollHeight > e.clientHeight || e.scrollWidth > e.clientWidth).length')
                 assert clipped == 0
