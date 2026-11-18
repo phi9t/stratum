@@ -16,7 +16,7 @@ def assert_page_fit(page):
     measured = page.evaluate("""() => {
         const root=document.documentElement;
         return {viewport:root.clientWidth, content:root.scrollWidth, inner:innerWidth,
-            overflowing:[...document.querySelectorAll('label,select,section,.graph-inspector')]
+            overflowing:[...document.querySelectorAll('header,header *,label,select,section,.graph-inspector')]
                 .filter(e=>e.getBoundingClientRect().right>root.clientWidth+1)
                 .map(e=>({tag:e.tagName, class:e.className, right:e.getBoundingClientRect().right}))};
     }""")
@@ -87,6 +87,8 @@ def main():
             assert page.locator('#mlp').evaluate('e => e.scrollWidth <= e.clientWidth')
             page.locator('#mlp').evaluate("e => e.style.removeProperty('width')")
             page.set_viewport_size({'width':320,'height':850})
+            # Wider glyph spacing also exercises wrapping when platform fonts differ.
+            page.add_style_tag(content='header .summary {letter-spacing:.5px}')
             assert_page_fit(page)
             fixtures=page.get_by_label('Graph',exact=True).locator('option').evaluate_all('els => els.map(e => e.value)')
             for graph in fixtures:
