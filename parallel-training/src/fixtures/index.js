@@ -100,3 +100,10 @@ export function sparseMixer({N=8,D=16,V=32}={}) {
     ],
   });
 }
+
+// The UI and verification sweeps enumerate the same supported graph catalog.
+export const fixtureCatalog=[
+  {id:'mlp',label:'Qwen3 MLP',create:qwenMlp},
+  {id:'attention',label:'Attention + residual · illustrative',create:attentionResidual},
+  {id:'sparse',label:'Sparse lookup + dense mixer · illustrative',create:sparseMixer},
+];

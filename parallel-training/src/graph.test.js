@@ -2,10 +2,10 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {validateGraph,allNodes,allEdges} from './graph/semantic.js';
 import {projectGraph} from './graph/projection.js';
-import {qwenMlp,attentionResidual,sparseMixer} from './fixtures/index.js';
+import {qwenMlp,attentionResidual,sparseMixer,fixtureCatalog} from './fixtures/index.js';
 
 test('all fixtures have typed resolvable ports and no view coordinates',()=>{
-  for (const graph of [qwenMlp({N:3,D:8,K:4}),attentionResidual(),sparseMixer()]) {
+  for (const graph of fixtureCatalog.map(entry=>entry.create({N:3,D:8,K:4}))) {
     assert.deepEqual(validateGraph(graph),[]);
     assert.equal(graph.schema,'stratum-semantic-graph/v1');
     for (const node of allNodes(graph)) {
@@ -66,7 +66,7 @@ test('MLP shape contract and phase boundaries work across dimensions and weight 
 
 test('ELK lays out every visible node and routes each port without overlap',async()=>{
   const {layoutGraph}=await import('./graph/layout.js');
-  for (const graph of [qwenMlp({N:3,D:8,K:4}),attentionResidual(),sparseMixer()]) {
+  for (const graph of fixtureCatalog.map(entry=>entry.create({N:3,D:8,K:4}))) {
     for (const collapsed of [new Set(),new Set(['forward','attention','lookup-block'])]) {
       const view=await layoutGraph(projectGraph(graph,collapsed));
       assert.ok(Number.isFinite(view.width)&&view.width>0);

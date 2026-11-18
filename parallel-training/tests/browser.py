@@ -78,7 +78,8 @@ def main():
             page.locator('#mlp').evaluate("e => e.style.removeProperty('width')")
             page.set_viewport_size({'width':320,'height':850})
             assert page.evaluate('document.documentElement.scrollWidth === innerWidth')
-            for graph in ['attention','sparse','mlp']:
+            fixtures=page.get_by_label('Graph',exact=True).locator('option').evaluate_all('els => els.map(e => e.value)')
+            for graph in fixtures:
                 page.get_by_label('Graph',exact=True).select_option(graph)
                 page.locator('.semantic-flow .react-flow__node').first.wait_for()
                 assert page.evaluate('document.documentElement.scrollWidth === innerWidth')
@@ -97,7 +98,7 @@ def main():
             print(f'PASS Chromium {browser.version}: all fixtures, collapse/selection, Back/Forward, ranks, evidence, schedules, 320px, offline assets')
             import json
             report = {'status':'PASS','browser':'Chromium '+browser.version,
-                'fixtures':['qwen3-mlp','attention-residual','sparse-mixer'],
+                'fixtures':fixtures,
                 'checks':['collapse/selection','Back/Forward','rank groups','evidence scope','1F1B regression',
                           '320px overflow','node text clearance','keyboard focus','accessible controls','offline assets']}
             (ROOT/'tests'/'browser-results.json').write_text(json.dumps(report,indent=2)+'\n')

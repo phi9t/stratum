@@ -3,14 +3,10 @@ import {allNodes} from './graph/semantic.js';
 import {graphHash,readGraphState} from './graph/state.js';
 import GraphExplorer from './graph/GraphExplorer.jsx';
 import {rankGroups} from './mlp.js';
-import {qwenMlp,attentionResidual,sparseMixer} from './fixtures/index.js';
+import {fixtureCatalog} from './fixtures/index.js';
 import shape from './mlp-shape.json';
 
-const choices=[
-  {id:'mlp',label:'Qwen3 MLP'},
-  {id:'attention',label:'Attention + residual · illustrative'},
-  {id:'sparse',label:'Sparse lookup + dense mixer · illustrative'},
-];
+const choices=fixtureCatalog;
 function fixtureFromHash() {
   const id=new URLSearchParams(location.hash.slice(1)).get('fixture');
   return choices.some(choice=>choice.id===id)?id:'mlp';
@@ -23,16 +19,14 @@ export default function MlpDrilldown({plan,stage,chunk,chunks,microbatch=1}) {
   const [axis,setAxis]=useState('both');
   const groups=rankGroups(stage,plan.tp,plan.fsdp,rank);
   const graph=useMemo(()=>{
-    if (fixture==='attention') return attentionResidual();
-    if (fixture==='sparse') return sparseMixer();
-    return qwenMlp({N:plan.seq*plan.microBatch,D:shape.width,K:shape.featuresPerRank,
+    return choices.find(choice=>choice.id===fixture).create({N:plan.seq*plan.microBatch,D:shape.width,K:shape.featuresPerRank,
       reshard,stage,tp:plan.tp,fsdp:plan.fsdp,rank:groups.rank,layer,microbatch});
   },[fixture,plan,reshard,stage,rank,layer,microbatch]);
   const [state,setState]=useState(()=>readGraphState(location.hash,graph));
   useEffect(()=>{
     const navigate=()=>{
       const id=fixtureFromHash();
-      const target=id===fixture?graph:id==='attention'?attentionResidual():id==='sparse'?sparseMixer():qwenMlp();
+      const target=id===fixture?graph:choices.find(choice=>choice.id===id).create();
       setFixture(id);
       setState(readGraphState(location.hash,target));
     };
@@ -57,7 +51,7 @@ export default function MlpDrilldown({plan,stage,chunk,chunks,microbatch=1}) {
   }
   function chooseFixture(id) {
     setFixture(id);
-    const nextGraph=id==='attention'?attentionResidual():id==='sparse'?sparseMixer():qwenMlp();
+    const nextGraph=choices.find(choice=>choice.id===id).create();
     update({fixture:id,selected:allNodes(nextGraph)[0].id,collapsed:new Set(),panel:'dependencies'});
   }
   const op=nodes.find(node=>node.id===selected);
